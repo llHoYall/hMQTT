@@ -11,5 +11,10 @@
 #ifndef __HoYa_MQTT_H__
 #define __HoYa_MQTT_H__
 
+class hMQTT {
+public:
+	hMQTT(void);
+};
+
 #endif
 
