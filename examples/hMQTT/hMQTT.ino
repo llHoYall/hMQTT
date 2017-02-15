@@ -11,21 +11,43 @@
 /* Include Header ------------------------------------------------------------*/
 #include <Arduino.h>
 #include <WiFi101.h>
+#include <hMQTT.h>
 
 /* Definition ----------------------------------------------------------------*/
 // Configuration
 #define WIFI_SSID		"RP_RND_A"
 #define WIFI_PWD		"radio1106"
 
+#define MQTT_SERVER	"broker.hivemq.com"
+
 /* Global Variable -----------------------------------------------------------*/
 int 				wifiStatus = WL_IDLE_STATUS;
 WiFiClient	wifiClient;
+
+hMQTT				hmqtt(wifiClient);
+
+/* Private Function ----------------------------------------------------------*/
+void setup_WiFi(void);
 
 /* Function ------------------------------------------------------------------*/
 void setup(void) {
 	Serial.begin(115200);
 	while (!Serial) { ; }		// wait for serial connection
 
+	setup_WiFi();
+}
+
+void loop(void) {
+	if (!wifiClient.connected()) {
+//		if (wifiClient.connect(MQTT_SERVER, 1883)) {
+//			Serial.println("[APP] Connect to MQTT server");
+
+			hmqtt.sendConnect();
+//		}
+	}
+}
+
+void setup_WiFi(void) {
 	if (wifiStatus != WL_CONNECTED) {
 		Serial.print("[APP] WiFi connect to: ");
 		Serial.println(WIFI_SSID);
@@ -36,18 +58,6 @@ void setup(void) {
 	}
 	Serial.println("[APP] WiFi is connected");
 	Serial.print("[APP] IP: ");
-	Serial.println(WiFi.localIP());
-}
-
-void loop(void) {
-	while (wifiClient.available()) {
-		char c = wifiClient.read();
-		Serial.write(c);
-	}
-
-	if (!wifiClient.connected()) {
-//		Serial.println("[APP] Dieconnecting from server");
-		wifiClient.stop();
-	}
+	Serial.println(IPAddress(WiFi.localIP()));
 }
 
