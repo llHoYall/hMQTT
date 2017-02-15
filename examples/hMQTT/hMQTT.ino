@@ -18,7 +18,9 @@
 #define WIFI_SSID		"RP_RND_A"
 #define WIFI_PWD		"radio1106"
 
-#define MQTT_SERVER	"broker.hivemq.com"
+//#define MQTT_SERVER	"broker.hivemq.com"
+#define MQTT_SERVER	"test.mosquitto.org"
+#define MQTT_PORT		1883
 
 /* Global Variable -----------------------------------------------------------*/
 int 				wifiStatus = WL_IDLE_STATUS;
@@ -35,15 +37,14 @@ void setup(void) {
 	while (!Serial) { ; }		// wait for serial connection
 
 	setup_WiFi();
+	setup_MQTT();
 }
 
 void loop(void) {
 	if (!wifiClient.connected()) {
-//		if (wifiClient.connect(MQTT_SERVER, 1883)) {
-//			Serial.println("[APP] Connect to MQTT server");
-
-			hmqtt.sendConnect();
-//		}
+		if (hmqtt.connect()) {
+			Serial.println("[APP] Connect to MQTT server");
+		}
 	}
 }
 
@@ -59,5 +60,9 @@ void setup_WiFi(void) {
 	Serial.println("[APP] WiFi is connected");
 	Serial.print("[APP] IP: ");
 	Serial.println(IPAddress(WiFi.localIP()));
+}
+
+void setup_MQTT(void) {
+	hmqtt.setServer(MQTT_SERVER, MQTT_PORT);
 }
 

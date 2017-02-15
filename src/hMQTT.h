@@ -20,6 +20,9 @@ class hMQTT {
 public:
 	hMQTT(Client& _client);
 
+	void setServer(String _domain, uint16_t _port);
+
+	boolean	connect(void);
 	void sendConnect(void);
 	void run(void);
 
@@ -28,7 +31,9 @@ private:
 	byte	varHeader[2];
 	byte	payload[64];
 
-	Client*	client;
+	String		serverDomain;
+	uint16_t	serverPort;
+	Client*		client;
 };
 
 #endif

@@ -16,15 +16,22 @@ hMQTT::hMQTT(Client& _client) {
 	this->client = &_client;
 }
 
+void hMQTT::setServer(String _domain, uint16_t _port) {
+	serverDomain = _domain;
+	serverPort = _port;
+}
+
+boolean hMQTT::connect(void) {
+	if (client->connect((const char*)serverDomain.c_str(), serverPort)) {
+		sendConnect();
+
+		return true;
+	}
+	return false;
+}
+
 void hMQTT::sendConnect(void) {
 	byte buffer[20];
-
-	if (client->connect("broker.hivemq.com", 1883)) {
-		Serial.println("[DBG] Connect to MQTT Server");
-	}
-	else {
-		return ;
-	}
 
 	buffer[0] = 0x10;
 	buffer[1] = 0x10;
@@ -74,7 +81,7 @@ void hMQTT::sendConnect(void) {
 	unsigned long s = millis();
 	while (1) {
 		unsigned long e = millis();
-		if (e - s >= 1000)
+		if (e - s >= 100)
 			return ;
 		char c = client->read();
 		Serial.println(c, HEX);
