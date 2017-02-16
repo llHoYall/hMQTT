@@ -22,7 +22,9 @@ public:
 
 	void setServer(String _domain, uint16_t _port);
 
+	boolean isConnected(void);
 	boolean	connect(void);
+
 	void sendConnect(void);
 	void run(void);
 
@@ -34,6 +36,12 @@ private:
 	String		serverDomain;
 	uint16_t	serverPort;
 	Client*		client;
+
+	enum STATE {
+		INIT,
+		CONNECTED,
+	};
+	STATE	state;
 };
 
 #endif

@@ -41,7 +41,7 @@ void setup(void) {
 }
 
 void loop(void) {
-	if (!wifiClient.connected()) {
+	if (!hmqtt.connected()) {
 		if (hmqtt.connect()) {
 			Serial.println("[APP] Connect to MQTT server");
 		}
